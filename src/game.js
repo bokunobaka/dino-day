@@ -119,7 +119,7 @@ export class Game {
     window.addEventListener('resize', () => this.onResize());
     canvas.addEventListener('pointerdown', (e) => this.onPointerDown(e));
     canvas.addEventListener('pointermove', (e) => this.onPointerMove(e));
-    for (const ev of ['pointerup', 'pointercancel']) canvas.addEventListener(ev, (e) => this.onPointerUp(e));
+    for (const ev of ['pointerup', 'pointercancel', 'lostpointercapture']) canvas.addEventListener(ev, (e) => this.onPointerUp(e));
     canvas.addEventListener('contextmenu', (e) => e.preventDefault());
   }
 
@@ -301,7 +301,8 @@ export class Game {
 
   // ------------------------------------------------------------ areas
   loadArea(name, { keep = [], followers = false } = {}) {
-    if (this.area) this.scene.remove(this.area.group);
+    const old = this.area && this.area.group;
+    if (old) this.scene.remove(old);
     this.items = [];
     this.critters = [];
     this.followers = [];
@@ -315,6 +316,8 @@ export class Game {
 
     this.area = AREAS[name](this);
     this.scene.add(this.area.group);
+    // free the GPU buffers of the place we left (shared shapes simply upload again when next used)
+    if (old) old.traverse((o) => o.geometry && o.geometry.dispose());
     for (const c of keep) {
       this.area.group.add(c.root);
       this.critters.push(c);
@@ -921,7 +924,8 @@ export class Game {
       this.camAngle = Math.sin(this.t * 0.4) * 0.5;
       off = new THREE.Vector3(0, 2.2, 7.5).applyAxisAngle(UP, this.camAngle);
       lookY = 3.2;
-      ahead = new THREE.Vector3();
+      // on a wide screen the little dino stands to the left of the title card
+      ahead = new THREE.Vector3(this.camera.aspect > 1.3 ? 3.6 : 0, 0, 0).applyAxisAngle(UP, this.camAngle);
     } else {
       this.camAngle = THREE.MathUtils.euclideanModulo(this.camAngle + Math.PI, Math.PI * 2) - Math.PI;
       this.camAngle *= Math.max(0, 1 - dt * 2.2);
@@ -1178,6 +1182,7 @@ export class Game {
       }
       if (this.ptr && !this.ptr.mini) this.ptr = null;
     }
+    if (this.ptr && this.ptr.mini && this.state !== 'minigame') this.ptr = null;
     this.updatePlayer(dt);
     this.updateFollowers();
     this.updatePet();

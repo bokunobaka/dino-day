@@ -54,7 +54,7 @@ Editing a line in `src/i18n.js` means re-recording that line.
 | 9 Snow Day | snowy valley | roll up a snow dino, dress it, give presents to the shivering friends |
 | 10 Waterhole Day | the waterhole | find floaty toys, jump in (friends too), serve everyone a drink |
 | 11 Sea Floor | prehistoric sea | open clams for pearls, befriend 3 sea reptiles, open the treasure chest |
-| 12 Nursery Day | the nursery farm | pick leaves, feed the hungry long-neck, lead 3 babies to their pen |
+| 12 Farm Day | the dino farm | pick leaves, feed the hungry long-neck, lead 3 babies to their pen |
 | 13 Band Day | open-air stage | find 3 instruments, stomp the glowing drums, play on stage |
 | 14 Circus Day | the dino circus | gather balls, walk the log over the lava stream, send Trixie through the fiery hoop |
 | 15 Camping Day | campsite at dusk | find firewood, light the campfire, toast marshmallows for friends |
@@ -87,6 +87,18 @@ Dev shortcuts: `?day=3` starts a day directly (`101` pterodactyl flight, `102` s
 - `src/areas/` the places: meadow, valley, cave, kitchen, volcano, dig site, jungle, sea floor...
 - `src/scenery.js` plants, rocks, eggs, nests, food, instruments... and `bake()` which merges static scenery into a few draw calls
 - `src/ui.js` HUD, title, wardrobe, tray; `src/audio.js` synthesized sounds, dino calls and music (no audio files)
+
+## Testing on a GPU (WSL2 + NVIDIA)
+
+A software-rendered browser is far too slow for a 3D game. With WSL2 and an NVIDIA card, start Chrome on the GPU and
+point your automation at it (checked with `WEBGL_debug_renderer_info`, which should name the NVIDIA card, not SwiftShader):
+
+    MESA_D3D12_DEFAULT_ADAPTER_NAME=NVIDIA GALLIUM_DRIVER=d3d12 LD_LIBRARY_PATH=/usr/lib/wsl/lib \
+      chrome --remote-debugging-port=9222 --no-sandbox --ignore-gpu-blocklist --enable-gpu-rasterization \
+             --use-gl=angle --use-angle=gl-egl
+
+`window.__game` is exposed, so a script can drive a whole day by running the enabled items in `__game.items`;
+every day and both mini-games were played through that way (60 fps in every place on a GTX 1080 Ti).
 
 ## Credits
 

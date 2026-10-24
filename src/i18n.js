@@ -77,9 +77,9 @@ const L = {
   // @@DAYS
   // Day 16 · Ice Day
   'd16.name': ['Jääpäev', 'Ice Day'],
-  'd16.intro': ['Täna libistame jääl! Korja viis lumehelvest.', 'Today we glide on the ice! Gather five snowflakes.'],
+  'd16.intro': ['Täna libiseme jääl! Korja viis lumehelvest.', 'Today we glide on the ice! Gather five snowflakes.'],
   'd16.h.flakes': ['Korja viis lumehelvest!', 'Gather five snowflakes!'],
-  'd16.h.spin': ['Keera ennast jää keskel oleval tähel!', 'Spin on the star in the middle of the ice!'],
+  'd16.h.spin': ['Keera end ringi jää keskel oleval tähel!', 'Spin on the star in the middle of the ice!'],
   'd16.h.friends': ['Võta kolm sõpra kaasa!', 'Take three friends along!'],
   'd16.spin': ['Hurraa, piruett!', 'Hooray, a pirouette!'],
   'd16.friend': ['Aitäh! Libiseme koos!', 'Thanks! Let us glide together!'],
@@ -123,9 +123,9 @@ const L = {
   'd13.done': ['Braavo! Milline vahva kontsert!', 'Bravo! What a great concert!'],
   'd13.end': ['Sa oled päris rokkstaar, dino!', 'You are a real rock star, dino!'],
 
-  // Day 12 · Nursery Farm Day
-  'd12.name': ['Talupäev', 'Nursery Day'],
-  'd12.intro': ['Tere hommikust talus! Vanaema Bronto on näljane. Korjame talle lehti!', 'Good morning at the nursery! Grandma Bronto is hungry. Let us pick leaves for her!'],
+  // Day 12 · Farm Day
+  'd12.name': ['Talupäev', 'Farm Day'],
+  'd12.intro': ['Tere hommikust talus! Vanaema Bronto on näljane. Korjame talle lehti!', 'Good morning on the farm! Grandma Bronto is hungry. Let us pick leaves for her!'],
   'd12.h.leaves': ['Korja neli kimpu lehti puudelt!', 'Pick four bunches of leaves from the trees!'],
   'd12.h.feed': ['Toida näljast pika kaelaga dinot!', 'Feed the hungry long-neck!'],
   'd12.h.babies': ['Kutsu kolm beebit endaga kaasa!', 'Call three babies to follow you!'],
@@ -151,7 +151,7 @@ const L = {
   'd11.end': ['Sa oled merekangelane!', 'You are a sea hero!'],
 
   // Day 10 · Waterhole Day
-  'd10.name': ['Veeaugupäev', 'Waterhole Day'],
+  'd10.name': ['Ujumispäev', 'Waterhole Day'],
   'd10.intro': ['Täna on kuum! Leiame neli ujumismänguasja ja läheme vette.', 'It is hot today! Let us find four floaty toys and jump in the water.'],
   'd10.h.toys': ['Leia neli ujumismänguasja!', 'Find four floaty toys!'],
   'd10.h.splash': ['Puuduta vett ja hüppa sisse!', 'Tap the water and jump in!'],
@@ -206,17 +206,17 @@ const L = {
   'd7.notYet': ['Veel mitte! Teeme kõigepealt ettevalmistused.', 'Not yet! Let us get everything ready first.'],
   'd7.wish': ['Pane soov ja puhu küünlad ära!', 'Make a wish and blow out the candles!'],
   'd7.done': ['Palju õnne sünnipäevaks, Bronto!', 'Happy birthday, Bronto!'],
-  'd7.end': ['Milline kõige parem sünnipäev!', 'What the best birthday!'],
+  'd7.end': ['Kõige parem sünnipäev!', 'What a wonderful birthday!'],
 
   // Day 6 · Fossil Day
   'd6.name': ['Fossiilipäev', 'Fossil Day'],
-  'd6.intro': ['Täna otsime luid! Kaevame kõigepealt kolm liivakünkat läbi.', 'Today we look for bones! First we dig up three sand mounds.'],
+  'd6.intro': ['Täna otsime luid! Kaevame kõigepealt kolm liivakünkat.', 'Today we look for bones! First we dig up three sand mounds.'],
   'd6.h.dig': ['Puuduta kolme künka, et kaevata!', 'Tap three mounds to dig!'],
   'd6.h.brush': ['Puhasta kolm luud harjaga!', 'Brush the three bones clean!'],
   'd6.h.build': ['Pane luustik kokku!', 'Put the skeleton together!'],
   'd6.standEarly': ['Veel mitte! Kõigepealt kaevame ja puhastame luud.', 'Not yet! First we dig and clean the bones.'],
   'd6.built': ['Vaata! Hiiglasuur dinosaurus!', 'Look! A giant dinosaur!'],
-  'd6.end': ['Sa oled suurepärane luuleidja!', 'You are a super fossil finder!'],
+  'd6.end': ['Sa oled suurepärane luude leidja!', 'You are a super fossil finder!'],
 
   // names of the friends
   'animal.tri': ['Trika', 'Trixie'],
@@ -285,7 +285,7 @@ const L = {
   'd2.intro': ['Tere hommikust, dino! Koopas on kõik veel unised. Vali kõigepealt endale värv ja müts!', 'Good morning, dino! Everyone in the cave is still sleepy. First pick your colour and hat!'],
   'd2.h.look': ['Mine veelombi juurde ja vali värv ja müts!', 'Go to the puddle and pick your colour and hat!'],
   'd2.h.wake': ['Ärata oma kolm unist sõpra!', 'Wake your three sleepy friends!'],
-  'd2.h.door': ['Nüüd mine päikese poole välja!', 'Now go out into the sunshine!'],
+  'd2.h.door': ['Nüüd mine välja päikese kätte!', 'Now go out into the sunshine!'],
   'd2.greet.tri': ['Tere hommikust, Trika!', 'Good morning, Trixie!'],
   'd2.greet.steg': ['Tere hommikust, Stego!', 'Good morning, Stego!'],
   'd2.greet.pachy': ['Tere hommikust, Pung!', 'Good morning, Bonk!'],
@@ -295,7 +295,7 @@ const L = {
 
   // Day 1 · Egg Day
   'd1.name': ['Munapäev', 'Egg Day'],
-  'd1.intro': ['Tere hommikust, väike dino! Mama Bronto on kolm muna kaotanud. Kas aitad neid leida?', 'Good morning, little dino! Mama Bronto has lost three eggs. Can you help find them?'],
+  'd1.intro': ['Tere hommikust, väike dino! Mama Bronto kaotas kolm muna. Kas aitad neid leida?', 'Good morning, little dino! Mama Bronto has lost three eggs. Can you help find them?'],
   'd1.h.eggs': ['Leia kolm kadunud muna!', 'Find the three lost eggs!'],
   'd1.h.nest': ['Vii munad pessa!', 'Take the eggs to the nest!'],
   'd1.h.hatch': ['Puuduta mune, et need kooruksid!', 'Tap the eggs so they hatch!'],

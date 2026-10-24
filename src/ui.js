@@ -8,7 +8,7 @@ const css = (n) => '#' + n.toString(16).padStart(6, '0');
 const skinBg = (d) => `radial-gradient(circle at 35% 30%, #fff8, transparent 45%), linear-gradient(${css(d.main)} 55%, ${css(d.belly)})`;
 
 const BAG_ICONS = {
-  egg: '🥚', fern: '🌿', berry: '🫐', mushroom: '🍄', bone: '🦴', balloon: '🎈', present: '🎁', amber: '🔶', snowball: '⚪',
+  egg: '🥚', fern: '🌿', berry: '🍇', mushroom: '🍄', bone: '🦴', balloon: '🎈', present: '🎁', amber: '🔶', snowball: '⚪',
   ornament: '🔔', toy: '🦆', shell: '🐚', pearl: '🦪', leaf: '🍃', drum: '🥁', horn: '🎺', ball: '🎾', wood: '🪵',
   star: '⭐', snowflake: '❄️', stick: '🥢', crystal: '💎',
 };
@@ -174,6 +174,7 @@ export const ui = {
 
   // ------------------------------------------------------------ end of day
   showEnd(day, stars, hasNext, onNext, onHome, rewards = []) {
+    this.hideHand();
     $('hud').hidden = true;
     $('tray').hidden = true;
     $('end').hidden = false;

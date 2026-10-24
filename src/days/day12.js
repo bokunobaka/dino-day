@@ -1,4 +1,4 @@
-// Day 12 · Nursery Farm Day: pick leaves, feed the hungry long-neck, lead the babies to their pen.
+// Day 12 · Farm Day: pick leaves, feed the hungry long-neck, lead the babies to their pen.
 import * as THREE from 'three';
 import { sfx } from '../audio.js';
 import { say } from '../speech.js';

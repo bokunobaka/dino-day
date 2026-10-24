@@ -18,7 +18,7 @@ export default {
   intro: t('d1.intro'),
   steps: [
     { id: 'eggs', icon: '🥚', count: 3, hint: t('d1.h.eggs') },
-    { id: 'nest', icon: '🪺', count: 1, hint: t('d1.h.nest') },
+    { id: 'nest', icon: '🏠', count: 1, hint: t('d1.h.nest') },
     { id: 'hatch', icon: '🐣', count: 3, hint: t('d1.h.hatch') },
   ],
 

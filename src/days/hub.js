@@ -29,7 +29,7 @@ export default {
       if (hitAt) item.hit.position.copy(hitAt);
     };
 
-    station(S.perch, '🪽', 2.2, 1.6, 2.8, () => {
+    station(S.perch, '🦅', 2.2, 1.6, 2.8, () => {
       sfx.animal('ptero');
       S.perch.bird.gesture('gesture-positive');
       say(t('hub.ride'));

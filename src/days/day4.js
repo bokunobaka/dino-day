@@ -8,7 +8,7 @@ import { makeLeafBundle, makeBerry, makeFish } from '../scenery.js';
 
 const TREATS = [
   { id: 'fern', icon: '🌿', word: t('treat.fern'), make: () => makeLeafBundle(), scale: 2.2 },
-  { id: 'berry', icon: '🫐', word: t('treat.berry'), make: () => makeBerry(), scale: 2.4 },
+  { id: 'berry', icon: '🍇', word: t('treat.berry'), make: () => makeBerry(), scale: 2.4 },
   { id: 'fish', icon: '🐟', word: t('treat.fish'), make: () => makeFish(), scale: 2.2 },
 ];
 

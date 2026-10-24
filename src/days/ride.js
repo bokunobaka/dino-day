@@ -12,7 +12,7 @@ export default {
   id: 101,
   minigame: 'ride',
   name: t('mg.ride.name'),
-  sticker: '🪽',
+  sticker: '🦅',
   area: 'sky',
   intro: t('mg.ride.intro'),
   steps: [],

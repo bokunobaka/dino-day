@@ -847,7 +847,7 @@ export const SKINS = [
   { main: 0xff9ad5, belly: 0xb6f0ff, accent: 0xffe35a }, // 12 candy
   { main: 0x6a8f3a, belly: 0xc6d98a, accent: 0x9b5f2b }, // 13 jungle
 ];
-export const HAT_ICONS = ['🧢', '🎉', '🌸', '🪖', '👑', '🏴‍☠️', '🧑‍🚀', '🤠', '👨‍🍳', '🧙', '🍃', '😎'];
+export const HAT_ICONS = ['🧢', '🎉', '🌸', '⛑️', '👑', '🏴‍☠️', '🚀', '🤠', '👨‍🍳', '🧙', '🍃', '😎'];
 
 function makeHats(deep) {
   const hats = [];

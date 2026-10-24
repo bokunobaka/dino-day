@@ -1,4 +1,4 @@
-// Day 12: the dino nursery farm. Leafy trees, a hungry long-neck, wandering babies, a cosy pen with a stone hut.
+// Day 12: the dino farm. Leafy trees, a hungry long-neck, wandering babies, a cosy pen with a stone hut.
 import * as THREE from 'three';
 import { mat, add, ball, CYL, CONE, BOX, SPHERE } from '../models.js';
 import { Dino } from '../dinos.js';

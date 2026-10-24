@@ -1,0 +1,231 @@
+// Day 10 · Waterhole Day: find floaty toys, splash into the water (friends too), serve everyone a drink.
+import * as THREE from 'three';
+import { sfx } from '../audio.js';
+import { say } from '../speech.js';
+import { t } from '../i18n.js';
+import { makeCoconut, makeWatermelon, makeJuice } from '../scenery.js';
+
+const DRINKS = [
+  { id: 'coconut', icon: '🥥', word: t('drink.coconut'), make: () => makeCoconut() },
+  { id: 'watermelon', icon: '🍉', word: t('drink.watermelon'), make: () => makeWatermelon() },
+  { id: 'juice', icon: '🧃', word: t('drink.juice'), make: () => makeJuice() },
+];
+
+export default {
+  id: 10,
+  name: t('d10.name'),
+  sticker: '💦',
+  area: 'waterhole',
+  intro: t('d10.intro'),
+  steps: [
+    { id: 'toys', icon: '🦆', count: 4, hint: t('d10.h.toys') },
+    { id: 'splash', icon: '💦', count: 3, hint: t('d10.h.splash') },
+    { id: 'drinks', icon: '🍹', count: 3, hint: t('d10.h.drinks') },
+  ],
+
+  start(game) {
+    const a = game.area;
+    this.rounds = 0;
+    this.selected = null;
+
+    a.toys.forEach((o) => {
+      o.item = game.addItem({
+        pos: o.pos, hitRadius: 1.1, reach: 1.5, hitY: 0.7,
+        run: () => {
+          if (o.taken) return;
+          o.taken = true;
+          o.item.enabled = false;
+          o.glow.visible = false;
+          sfx.pop();
+          game.addToBag('toy');
+          game.burst({ x: o.pos.x, y: 0.8, z: o.pos.z }, 14, 1.2, 0.4, [0xffffff, 0x9be7ff, 0xfff0a0]);
+          game.pickUp(o.group, 1.2);
+          say(t('nums')[Math.min(game.progress, 5)]);
+          game.addProgress('toys');
+        },
+      });
+    });
+    game.hintSpots = () => {
+      if (!game.step) return [];
+      if (game.step.id === 'toys') return a.toys.filter((o) => !o.taken).map((o) => ({ x: o.pos.x, y: 1.0, z: o.pos.z }));
+      if (game.step.id === 'splash') return [{ x: a.POOL.x + (Math.random() - 0.5) * 8, y: 0.2, z: a.POOL.z + (Math.random() - 0.5) * 6 }];
+      return [];
+    };
+
+    // tapping anywhere on the water: walk to the edge, then jump in
+    this.pool = game.addItem({
+      pos: a.edgePos, hitRadius: a.POOL.r, reach: 0.9, hitY: -0.3,
+      run: () => this.splash(game),
+    });
+    this.pool.hit.position.set(a.POOL.x, -0.15, a.POOL.z);
+    // a flat slab over the water only, so it never catches taps meant for things beside or behind the lake
+    this.pool.hit.scale.set(1, 0.06, 1);
+  },
+
+  onStep(game, id) {
+    if (id === 'splash') game.setArrow(game.area.edgePos, 3);
+    if (id === 'drinks') {
+      game.setArrow(null);
+      this.beginServing(game);
+    }
+  },
+
+  splash(game) {
+    const a = game.area;
+    if (game.state !== 'play') return;
+    if (!game.step || game.step.id !== 'splash') {
+      if (game.step && game.step.id === 'toys') say(t('d10.toysFirst'));
+      return;
+    }
+    const round = this.rounds++;
+    const p = game.player;
+    game.setArrow(null);
+    game.state = 'party';
+    game.target = null;
+    const edge = p.position.clone();
+    const spot = new THREE.Vector3(a.POOL.x + (round - 1) * 2.4, -0.55, a.POOL.z + (round - 1) * 0.6 + 1);
+    p.userData.cheering = false;
+
+    const water = (x, z, n = 40) => {
+      sfx.splash();
+      game.sparkles.emit(x, 0.2, z, n, { speed: 3, up: 4, life: 1.2, colors: [0x9be7ff, 0xffffff, 0x6ad7ff], gravity: 8, spread: 0.6 });
+    };
+
+    game.hop(p.position, spot, 0.9, 2.6, () => {
+      water(spot.x, spot.z, 60);
+      say(t('splashes')[round % 3]);
+      game.tween(1.9, (k) => (p.position.y = -0.55 + Math.sin(k * 10) * 0.06));
+      const f = a.friends[round % a.friends.length];
+      const home = f.root.position.clone();
+      const side = new THREE.Vector3(a.POOL.x + a.POOL.r + 1.0, 0, a.POOL.z + (round - 1) * 1.6);
+      f.goTo(side.x, side.z, {
+        speed: 4.6,
+        onArrive: () => {
+          f.heading = -Math.PI / 2;
+          f.play('dance');
+          const into = new THREE.Vector3(spot.x + 2.0, -0.4, spot.z);
+          game.hop(f.root.position, into, 0.8, 2.2, () => {
+            water(into.x, into.z, 40);
+            game.after(1.0, () => {
+              game.hop(f.root.position, side, 0.8, 2, () => {
+                f.root.position.y = 0;
+                f.play('idle');
+                f.goTo(home.x, home.z, { speed: 3.5 });
+              });
+            });
+          });
+        },
+      });
+      game.after(2.1, () => {
+        game.hop(p.position, edge, 0.8, 2.2, () => {
+          p.position.copy(edge);
+          p.position.y = 0;
+          game.state = 'play';
+          game.hearts.emit(edge.x, 1.6, edge.z, 6, { speed: 0.6, up: 1.2, life: 1.4, colors: [0x6ad7ff, 0xffffff] });
+          game.addProgress('splash');
+        });
+      });
+    });
+  },
+
+  beginServing(game) {
+    const a = game.area;
+    const likes = ['coconut', 'watermelon', 'juice'];
+    this.guests = a.friends.map((c, i) => ({ c, likes: likes[i], name: t('animal.' + c.name) }));
+    // the thirsty friends walk over and line up in front of the lake, where they can be seen and tapped
+    a.friends.forEach((c, i) => {
+      c.goTo([-4.8, 0, 4.8][i], 6.4, {
+        speed: 4.4,
+        onArrive: () => {
+          c.heading = Math.atan2(game.player.position.x - c.root.position.x, game.player.position.z - c.root.position.z);
+        },
+      });
+    });
+    say(t('d10.look'));
+    game.ui.showTray(DRINKS, (id) => {
+      this.selected = id;
+      sfx.tap();
+    });
+    this.guests.forEach((g) => {
+      const d = DRINKS.find((x) => x.id === g.likes);
+      g.bubble = game.addBubble(g.c.root, d.icon, g.c.height + 0.7);
+      g.item = game.addItem({
+        track: g.c.root, hitRadius: 1.3, reach: 99, hitY: 0.9,
+        run: () => this.serve(game, g),
+      });
+    });
+  },
+
+  serve(game, g) {
+    if (g.served) return;
+    if (!this.selected) {
+      sfx.nope();
+      say(t('d4.pickFirst'));
+      game.ui.pulseTray();
+      return;
+    }
+    const c = g.c;
+    if (this.selected !== g.likes) {
+      sfx.nope();
+      c.gesture('gesture-negative');
+      const want = DRINKS.find((x) => x.id === g.likes);
+      say(t('d10.no', { name: g.name, want: want.word }));
+      return;
+    }
+    g.served = true;
+    g.item.enabled = false;
+    g.bubble.remove();
+    const d = DRINKS.find((x) => x.id === g.likes);
+    const m = d.make();
+    m.scale.setScalar(2.2);
+    m.position.set(c.root.position.x, 2.3, c.root.position.z);
+    game.area.group.add(m);
+    c.play('eat');
+    sfx.pop();
+    game.tween(0.9, (k) => (m.position.y = 2.3 - k * 1.0), () => m.removeFromParent());
+    game.after(1.3, () => {
+      sfx.chime();
+      game.hearts.emit(c.root.position.x, 2, c.root.position.z, 10, { speed: 0.8, up: 1.4, life: 1.8, colors: [0xff5fae, 0xff8fc7, 0xffffff] });
+      say(t('d4.yum', { name: g.name }));
+      c.gesture('gesture-positive');
+      game.after(1.0, () => c.play('idle'));
+    });
+    game.addProgress('drinks');
+  },
+
+  onDone(game) {
+    const a = game.area;
+    game.ui.hideTray();
+    game.state = 'party';
+    game.target = null;
+    game.after(1.8, () => {
+      sfx.fanfare();
+      say(t('d10.done'));
+      game.confettiAt({ x: 0, z: a.POOL.z }, 5);
+      const p = game.player;
+      p.userData.cheering = true;
+      // everyone cannonballs in together
+      a.friends.forEach((f, i) => {
+        const into = new THREE.Vector3(-3 + i * 3, -0.4, a.POOL.z + (i - 1) * 0.8);
+        game.after(0.4 + i * 0.35, () => {
+          f.play('dance');
+          game.hop(f.root.position, into, 0.9, 3, () => {
+            sfx.splash();
+            game.sparkles.emit(into.x, 0.2, into.z, 50, { speed: 3.2, up: 4.2, life: 1.3, colors: [0x9be7ff, 0xffffff, 0x6ad7ff], gravity: 8, spread: 0.6 });
+          });
+        });
+      });
+      game.after(1.6, () => {
+        const into = new THREE.Vector3(0, -0.55, a.POOL.z + 0.6);
+        game.hop(p.position, into, 1.0, 3.2, () => {
+          sfx.splash();
+          game.sparkles.emit(into.x, 0.2, into.z, 70, { speed: 3.5, up: 4.5, life: 1.4, colors: [0x9be7ff, 0xffffff, 0x6ad7ff], gravity: 8, spread: 0.8 });
+        });
+      });
+    });
+    game.after(8, () => {
+      game.player.userData.cheering = false;
+      game.finishDay(t('d10.end'));
+    });
+  },
+};

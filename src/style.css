@@ -721,3 +721,18 @@ body.wardrobe-open #subtitle {
 }
 .petBtn img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
 .petBtn { overflow: hidden; padding: 0; }
+
+/* the wardrobe has fourteen colours and twelve hats: keep it compact */
+#wardrobe .swatch { width: 54px; height: 54px; font-size: 26px; border-width: 3px; }
+#wardrobe .wrow { gap: 8px; }
+
+/* narrow screens (phones): a smaller quest pill that keeps clear of the sound and gear buttons */
+@media (max-width: 700px) {
+  .badge { display: none; }
+  .pill { left: 10px; transform: none; gap: 6px; padding: 5px 8px; max-width: calc(100vw - 84px); }
+  #steps { gap: 4px; }
+  .chip { padding: 3px 7px; gap: 4px; }
+  .chip .ic { font-size: 24px; }
+  .chip.future .pips, .chip.done .pips { display: none; }
+  .pips i { width: 9px; height: 9px; border-width: 2px; }
+}

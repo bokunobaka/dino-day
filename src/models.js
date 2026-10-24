@@ -20,7 +20,8 @@ export function mat(color, extra = {}) {
   return m;
 }
 
-export const SPHERE = new THREE.SphereGeometry(1, 20, 14);
+export const SPHERE = new THREE.SphereGeometry(1, 16, 11);
+export const SPHERE_LO = new THREE.SphereGeometry(1, 10, 7); // for small parts: eyes, cheeks, toes
 export const CYL = new THREE.CylinderGeometry(1, 1, 1, 18);
 export const CONE = new THREE.ConeGeometry(1, 1, 14);
 export const BOX = new THREE.BoxGeometry(1, 1, 1);
@@ -34,7 +35,10 @@ export function add(parent, geo, color, pos = [0, 0, 0], scale = [1, 1, 1], extr
   parent.add(m);
   return m;
 }
-export const ball = (p, c, pos, s) => add(p, SPHERE, c, pos, typeof s === 'number' ? [s, s, s] : s);
+export const ball = (p, c, pos, s) => {
+  const sc = typeof s === 'number' ? [s, s, s] : s;
+  return add(p, Math.max(sc[0], sc[1], sc[2]) < 0.16 ? SPHERE_LO : SPHERE, c, pos, sc);
+};
 
 export const GOLD = 0xffcf3f;
 export const ORANGE = 0xff8a3d;

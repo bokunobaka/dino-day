@@ -308,6 +308,7 @@ export class Game {
     this.tweens = [];
     this.timers = [];
     this.hintSpots = null;
+    this.noFollow = false;
     this.clearBubbles();
     this.setArrow(null);
     this.target = null;
@@ -345,11 +346,13 @@ export class Game {
   }
 
   addFollower(c) {
+    if (this.noFollow) return; // a day that sent the friends to their places must not get them back
     if (!this.followers.includes(c)) this.followers.push(c);
   }
 
   clearFollowers() {
     this.followers = [];
+    this.noFollow = true;
   }
 
   addItem({ pos, track = null, hitRadius = 0.8, reach = 1, hitY = 0.6, run }) {
@@ -503,9 +506,13 @@ export class Game {
       this.pending[stepId] = (this.pending[stepId] || 0) + n;
       return;
     }
+    if (this.progress >= this.step.count) return; // already complete: the next step is on its way
     this.progress = Math.min(this.step.count, this.progress + n);
     this.refreshQuestUi();
-    if (this.progress >= this.step.count) this.after(0.9, () => this.advanceStep());
+    if (this.progress >= this.step.count) {
+      const idx = this.stepIndex;
+      this.after(0.9, () => this.stepIndex === idx && this.advanceStep());
+    }
   }
 
   advanceStep() {
@@ -524,7 +531,10 @@ export class Game {
     if (early) {
       this.progress = Math.min(next.count, early);
       this.refreshQuestUi();
-      if (this.progress >= next.count) this.after(1.8, () => this.advanceStep());
+      if (this.progress >= next.count) {
+        const idx = this.stepIndex;
+        this.after(1.8, () => this.stepIndex === idx && this.advanceStep());
+      }
     }
   }
 
@@ -619,7 +629,7 @@ export class Game {
     this.state = 'wardrobe';
     this.target = null;
     this.heading = 0; // face the camera
-    this.camZoomTarget = 0.5;
+    this.camZoomTarget = 0.55;
     ui.showWardrobe(
       this.saved.outfit,
       this.saved.unlocked,

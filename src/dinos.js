@@ -2,6 +2,7 @@
 // segments, legs, wings...) that one shared animator moves. `Dino` is the walking/dancing friend used in every day;
 // `makeDinoKid` is the player (dress-up colours + hats).
 import * as THREE from 'three';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { mat, add, ball, gradient, SPHERE, CYL, CONE, BOX, GOLD } from './models.js';
 
 const Z = new THREE.Vector3(0, 0, 1);
@@ -73,6 +74,7 @@ function mouth(head, pos, size) {
   m.scale.setScalar(0.001);
   m.castShadow = false;
   m.userData.size = size;
+  m.userData.keep = true;
   return m;
 }
 
@@ -81,6 +83,33 @@ const spike = (p, color, pos, s, rot = [0, 0, 0]) => {
   c.rotation.set(...rot);
   return c;
 };
+
+// Fewer draw calls: inside every group, merge the plain meshes that share a material into one. Meshes marked
+// `userData.keep` (the roar mouths) stay separate because the animator scales them.
+export function mergeGroup(group) {
+  const buckets = new Map();
+  for (const o of group.children.slice()) {
+    if (!o.isMesh || o.userData.keep) continue;
+    o.updateMatrix();
+    const g = (o.geometry.index ? o.geometry.toNonIndexed() : o.geometry.clone()).applyMatrix4(o.matrix);
+    for (const k of Object.keys(g.attributes)) if (k !== 'position' && k !== 'normal' && k !== 'uv') g.deleteAttribute(k);
+    const key = `${o.material.uuid}|${o.castShadow ? 1 : 0}`;
+    if (!buckets.has(key)) buckets.set(key, { material: o.material, cast: o.castShadow, geos: [] });
+    buckets.get(key).geos.push(g);
+    group.remove(o);
+  }
+  for (const b of buckets.values()) {
+    const m = new THREE.Mesh(mergeGeometries(b.geos), b.material);
+    m.castShadow = b.cast;
+    group.add(m);
+  }
+}
+
+export function mergeRig(root) {
+  const groups = [];
+  root.traverse((o) => (o === root || o.isGroup) && groups.push(o));
+  groups.forEach(mergeGroup);
+}
 
 // ------------------------------------------------------------------ the rig
 function newRig(root) {
@@ -586,6 +615,7 @@ export const SPECIES_LIST = Object.keys(SPECIES);
 export function makeRig(species, opts = {}) {
   const P = { ...SPECIES[species], ...opts };
   const rig = BUILD[species](P);
+  mergeRig(rig.root);
   rig.species = species;
   rig.eyeBlinkOffset = Math.random() * 3;
   const box = new THREE.Box3().setFromObject(rig.root);
@@ -918,10 +948,14 @@ export function makeDinoKid(outfit = { skin: 0, hat: 0 }) {
   const bellyM = mat(SKINS[0].belly).clone();
   const accentM = mat(SKINS[0].accent).clone();
   const rig = BUILD.rex({ main: mainM, belly: bellyM, accent: accentM, kid: true });
+  mergeRig(rig.root);
   const root = new THREE.Group();
   root.add(rig.root);
   const hats = makeHats(accentM);
-  hats.forEach((hat) => rig.head.add(hat));
+  hats.forEach((hat) => {
+    mergeGroup(hat);
+    rig.head.add(hat);
+  });
   // back spots in the accent colour
   for (const [x, y, z] of [[0.22, 1.42, -0.05], [-0.2, 1.36, 0.2], [0.05, 1.5, 0.25], [-0.25, 1.4, -0.25]]) ball(rig.body, accentM, [x, y, z], [0.07, 0.04, 0.07]).castShadow = false;
   root.scale.setScalar(0.72);

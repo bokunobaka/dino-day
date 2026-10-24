@@ -28,13 +28,14 @@ Estonian by default. Add `?lang=en` for English (the choice is remembered; `?lan
 All words live in `src/i18n.js` as `[estonian, english]` pairs. Spoken lines use a device voice for the language, and if the
 device has none (many have no Estonian voice) the game shows the subtitle only.
 
-## Voice (recorded Estonian) — not recorded yet
+## Voice (recorded Estonian)
 
-The game already looks for recorded clips in `public/voice/et/` (found by a hash of the exact line text), falls back to
-a device voice and finally to the subtitle alone. To add the Estonian voice later:
+All 226 Estonian lines are recorded (voice Triin from jutusta.ee) in `public/voice/et/`, found by a hash of the exact line
+text. If a clip is missing the game falls back to a device voice and finally to the subtitle alone. To re-record:
 
-    node tools/voice-lines.mjs > lines.json      # every spoken line with its id (226 lines)
-    # generate each line as <id>.wav with a voice, put them in one folder, then:
+    node tools/voice-lines.mjs > lines.json      # every spoken line with its id
+    # POST {text, language:"Estonian", presetId:"triin", speed:1} to https://jutusta.ee/api/tts while logged in
+    # (anonymous use stops after ~6 clips/day); save each WAV as <id>.wav in one folder, then:
     node tools/wav-to-mp3.mjs <folder-with-wavs>  # writes public/voice/et/*.mp3 + manifest.json
 
 Editing a line in `src/i18n.js` means re-recording that line.

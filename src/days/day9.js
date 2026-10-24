@@ -63,7 +63,7 @@ export default {
 
     a.bits.forEach((b) => {
       b.item = game.addItem({
-        pos: b.pos, hitRadius: 0.8, reach: 2.2, hitY: 0.9,
+        pos: b.pos, hitRadius: 0.8, reach: 3.0, hitY: 0.9,
         run: () => {
           if (b.taken) return;
           if (this.built < 3) {

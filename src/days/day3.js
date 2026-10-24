@@ -57,7 +57,7 @@ export default {
       game.step && game.step.id === 'gather' ? this.ingredients.filter((i) => i.item.enabled).map((i) => ({ x: i.spot.x, y: 1.2, z: i.spot.z })) : [];
 
     this.potItem = game.addItem({
-      pos: a.island.pos, hitRadius: 1.5, reach: 3.2, hitY: 1.5,
+      pos: a.island.pos, hitRadius: 1.6, reach: 3.9, hitY: 1.5,
       run: () => this.stir(game),
     });
     this.fireItem = game.addItem({
@@ -175,7 +175,7 @@ export default {
       b.soup.material = b.soup.material.clone();
       b.soup.material.color.set(SOUPS[i]);
       b.item = game.addItem({
-        pos: { x: b.x, z: b.z }, hitRadius: 0.6, reach: 3.0, hitY: a.island.top + 0.3,
+        pos: { x: b.x, z: b.z }, hitRadius: 0.6, reach: 3.6, hitY: a.island.top + 0.3,
         run: () => {
           b.item.enabled = false;
           b.soup.visible = true;

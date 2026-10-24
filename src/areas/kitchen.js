@@ -29,7 +29,7 @@ export function buildKitchen(game) {
   add(table, CYL, mat(0xaaa097), [0, 0.5, 0], [2.4, 1.0, 2.4]);
   add(table, CYL, mat(0xc4baa9), [0, 1.0, 0], [2.5, 0.08, 2.5]);
   place(g, table, 0, -3);
-  block(0, -3, 2.9);
+  block(0, -3, 2.45);
   const pot = makeStonePot();
   pot.position.set(0, island.top - 0.5, -3);
   g.add(pot);

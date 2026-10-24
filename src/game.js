@@ -691,6 +691,42 @@ export class Game {
     }
   }
 
+  // when the place to go next is off screen, a yellow arrow at the screen edge points toward it
+  updateEdgeArrow() {
+    const el = (this.edgeEl = this.edgeEl || $('edgeArrow'));
+    let target = null;
+    if (this.state === 'play' && this.step) {
+      if (this.arrowTarget && this.arrow.visible) target = this.arrowTarget.pos;
+      else if (this.idle > 10 && this.hintSpots) {
+        // lost for a while: point to the nearest thing that still needs finding
+        const p = this.player.position;
+        let best = 1e9;
+        for (const s of this.hintSpots()) {
+          const d = Math.hypot(s.x - p.x, s.z - p.z);
+          if (d < best) {
+            best = d;
+            target = s;
+          }
+        }
+      }
+    }
+    if (!target) return void (el.hidden = true);
+    const v = new THREE.Vector3(target.x, 1, target.z).project(this.camera);
+    let x = v.x;
+    let y = v.y;
+    if (v.z > 1) {
+      x = -x;
+      y = -y;
+    } else if (Math.abs(x) < 0.9 && Math.abs(y) < 0.85) return void (el.hidden = true);
+    const m = Math.max(Math.abs(x) / 0.88, Math.abs(y) / 0.8, 1e-4);
+    x /= m;
+    y /= m;
+    const w = this.canvas.clientWidth;
+    const h = this.canvas.clientHeight;
+    el.style.transform = `translate(${((x + 1) / 2) * w}px, ${((1 - y) / 2) * h}px) rotate(${Math.atan2(-y, x)}rad)`;
+    el.hidden = false;
+  }
+
   setArrow(pos, y = 3) {
     this.arrowTarget = pos ? { pos, y } : null;
     this.arrow.visible = !!pos;
@@ -923,7 +959,7 @@ export class Game {
     if (title) {
       this.camAngle = Math.sin(this.t * 0.4) * 0.5;
       off = new THREE.Vector3(0, 2.2, 7.5).applyAxisAngle(UP, this.camAngle);
-      lookY = 3.2;
+      lookY = 2.7;
       // on a wide screen the little dino stands to the left of the title card
       ahead = new THREE.Vector3(this.camera.aspect > 1.3 ? 3.6 : 0, 0, 0).applyAxisAngle(UP, this.camAngle);
     } else {
@@ -932,7 +968,7 @@ export class Game {
       off = this.cameraOffset().applyAxisAngle(UP, this.camAngle);
       // zoomed in (wardrobe): aim below her so she sits in the top half, above the panel
       const z = THREE.MathUtils.clamp((1 - this.camZoom) / 0.5, 0, 1);
-      lookY = 1.2 - z * 1.0;
+      lookY = 1.2 - z * 1.8;
       ahead = new THREE.Vector3(0, 0, -2.5 * (1 - z)).applyAxisAngle(UP, this.camAngle);
     }
     if (this.camOverride) {
@@ -1207,6 +1243,7 @@ export class Game {
 
     this.updateCamera(dt);
     this.updateBubbles();
+    this.updateEdgeArrow();
     this.renderer.render(this.scene, this.camera);
   }
 

@@ -115,7 +115,7 @@ export function buildDig(game) {
   add(table, BOX, 0xc9a07a, [0, 0.55, 0], [5.6, 0.2, 2.2]);
   for (const sx of [-1, 1]) for (const sz of [-1, 1]) add(table, CYL, 0x8a5a33, [sx * 2.5, 0.25, sz * 0.9], [0.12, 0.5, 0.12]);
   place(g, table, 0, -10);
-  block(0, -10, 3.2);
+  colliders.push({ x: 0, z: -10, hw: 2.9, hd: 1.2 }); // the table is a long box
   const slots = [-1.7, 0, 1.7].map((x) => new THREE.Vector3(x, 0.78, -10));
 
   // the display stand where the skeleton goes together

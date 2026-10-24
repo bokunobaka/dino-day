@@ -86,7 +86,7 @@ export default {
     if (id === 'brush') {
       this.finds.forEach((f, i) => {
         f.item = game.addItem({
-          pos: f.pos, hitRadius: 1.1, reach: 2.8, hitY: 1.1,
+          pos: f.pos, hitRadius: 1.1, reach: 3.2, hitY: 1.1,
           run: () => {
             if (f.clean) return;
             f.clean = true;
